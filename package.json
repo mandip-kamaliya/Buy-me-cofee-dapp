@@ -1,0 +1,17 @@
+{
+  "name": "buy-me-cofee-dapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "viem": "^2.31.7",
+    "vite": "^7.0.3"
+  }
+}
