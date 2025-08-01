@@ -1,5 +1,5 @@
 import { createWalletClient, custom ,createPublicClient,defineChain,parseEther} from 'https://esm.sh/viem';
-
+import { contractAddress, abi } from './constants.js';
 const connectButton = document.getElementById("connectButton");
 const fundButton = document.getElementById("fundButton");
 const ethAmountInput = document.getElementById("ethAmount");
@@ -31,7 +31,7 @@ async function fund(){
     if (typeof window.ethereum !== "undefined") {
         // Re-initialize or confirm walletClient
         // Note: We assume 'walletClient' is declared globally (e.g., 'let walletClient;')
-        walletClient = createWalletClient({
+       const walletClient = createWalletClient({
             transport: custom(window.ethereum),
         });
         const publicClient=createPublicClient({
@@ -39,17 +39,17 @@ async function fund(){
         })
         // Request account access (important step!)
         const [address] = await walletClient.requestAddresses();
-        const currentChain = await getCurrentChain();
-       const simulateResult = publicClient.simulateContract({
-        address: undefined, // TODO: Add deployed contract address
-        abi: undefined,     // TODO: Add contract ABI
+        const currentChain = await getCurrentChain(walletClient);
+       const {request} = await publicClient.simulateContract({
+        address: contractAddress, // TODO: Add deployed contract address
+        abi: abi,     // TODO: Add contract ABI
         functionName: 'fund',
         chain:currentChain,
         account: address,   // Use the address obtained from requestAddresses
-        value: undefined,
         value: parseEther(ethAmount),   // TODO: Add parsed ETH amount in Wei
         })
-        console.log("Wallet connected, Account:", address);      // Now we can proceed with transaction logic...
+        const hash = await walletClient.writeContract(request)
+        console.log("Transaction processed: ", hash)      // Now we can proceed with transaction logic...
     } else {
         // Handle the case where MetaMask (or other provider) is not installed
         console.log("Please install MetaMask!");
@@ -78,3 +78,4 @@ async function getCurrentChain(client){
 }
 
 connectButton.addEventListener("click", connect);
+fundButton.addEventListener("click",fund);
