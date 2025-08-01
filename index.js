@@ -1,5 +1,6 @@
-import { createWalletClient, custom ,createPublicClient,defineChain,parseEther} from 'https://esm.sh/viem';
+import { createWalletClient, custom ,createPublicClient,defineChain,parseEther,formatEther} from 'https://esm.sh/viem';
 import { contractAddress, abi } from './constants.js';
+
 const connectButton = document.getElementById("connectButton");
 const fundButton = document.getElementById("fundButton");
 const ethAmountInput = document.getElementById("ethAmount");
@@ -46,7 +47,8 @@ async function fund(){
         functionName: 'fund',
         chain:currentChain,
         account: address,   // Use the address obtained from requestAddresses
-        value: parseEther(ethAmount),   // TODO: Add parsed ETH amount in Wei
+        value: parseEther(ethAmount),
+        blockTag: 'latest'   // TODO: Add parsed ETH amount in Wei
         })
         const hash = await walletClient.writeContract(request)
         console.log("Transaction processed: ", hash)      // Now we can proceed with transaction logic...
@@ -77,5 +79,25 @@ async function getCurrentChain(client){
   return currentChain;
 }
 
+async function GetBalance() {
+  if(typeof(window.ethereum) !== "undefined"){
+   try {
+     const publicClient =  createPublicClient({
+       transport:custom(window.ethereum)
+     });
+     const Balance = await publicClient.getBalance({
+        address:contractAddress
+     })
+     console.log(formatEther(Balance))
+   } catch (error) {
+    console.log(error);    
+}
+  }else{
+    alert("Please Connect to metamask!!!!");
+  }
+}
+
+
 connectButton.addEventListener("click", connect);
 fundButton.addEventListener("click",fund);
+balanceButton.addEventListener("click",GetBalance)
