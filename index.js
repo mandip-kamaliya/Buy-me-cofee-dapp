@@ -1,8 +1,9 @@
-import { createWalletClient, custom ,createPublicClient,defineChain,parseEther} from 'viem';
+import { createWalletClient, custom ,createPublicClient,defineChain,parseEther} from 'https://esm.sh/viem';
 
 const connectButton = document.getElementById("connectButton");
 const fundButton = document.getElementById("fundButton");
 const ethAmountInput = document.getElementById("ethAmount");
+
 async function connect() {
   if (typeof window.ethereum !== "undefined") {
     console.log("Connecting...");
@@ -39,7 +40,7 @@ async function fund(){
         // Request account access (important step!)
         const [address] = await walletClient.requestAddresses();
         const currentChain = await getCurrentChain();
-       const stimulateResult = publicClient.simulateContract({
+       const simulateResult = publicClient.simulateContract({
         address: undefined, // TODO: Add deployed contract address
         abi: undefined,     // TODO: Add contract ABI
         functionName: 'fund',
@@ -48,10 +49,7 @@ async function fund(){
         value: undefined,
         value: parseEther(ethAmount),   // TODO: Add parsed ETH amount in Wei
         })
-        console.log("Wallet connected, Account:", address);
-​
-        // Now we can proceed with transaction logic...
-​
+        console.log("Wallet connected, Account:", address);      // Now we can proceed with transaction logic...
     } else {
         // Handle the case where MetaMask (or other provider) is not installed
         console.log("Please install MetaMask!");
